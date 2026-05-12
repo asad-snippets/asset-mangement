@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,14 +20,17 @@ return Application::configure(basePath: dirname(__DIR__))
    
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'role' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
+
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
 
         $exceptions->render(function (Throwable $e, Request $request) {
 
-            // Validation errors (422)
             if ($e instanceof ValidationException) {
                 return response()->json([
                     'success' => false,
@@ -35,7 +39,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 422);
             }
 
-            // Unauthenticated (401)
             if ($e instanceof AuthenticationException) {
                 return response()->json([
                     'success' => false,
@@ -43,7 +46,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
 
-            // Route not found (404)
             if ($e instanceof NotFoundHttpException) {
                 return response()->json([
                     'success' => false,
@@ -51,7 +53,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 404);
             }
 
-            // Wrong HTTP method (405)
             if ($e instanceof MethodNotAllowedHttpException) {
                 return response()->json([
                     'success' => false,
@@ -59,7 +60,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 405);
             }
 
-            // Everything else
             $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
 
             return response()->json([
