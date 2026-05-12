@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Helpers\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -15,13 +15,16 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'role' => 'in:admin,manager,employee'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'role' => $request->role ?? Role::EMPLOYEE,
+            'permissions' => [],
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -106,7 +109,8 @@ class AuthController extends Controller
         );
 
         return response()->json([
-            'message' => 'Reset token generated'
+            'message' => 'Reset token generated',
+            'token' => $token
         ]);
     }
 
