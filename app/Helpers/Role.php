@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Helpers;
 class Role
 {
@@ -11,6 +10,13 @@ class Role
     public const PERMISSION_DELETE_USER = 'delete-user';
     public const PERMISSION_VIEW_REPORTS = 'view-reports';
     public const PERMISSION_MANAGE_ASSETS = 'manage-assets';
+    public const PERMISSION_SHOW_ASSETS='show-assets';
+
+    public const ROLES = [
+        self::ADMIN,
+        self::MANAGER,
+        self::EMPLOYEE,
+    ];
 
     public const ALL_PERMISSIONS = [
         self::PERMISSION_CREATE_USER,
@@ -18,17 +24,19 @@ class Role
         self::PERMISSION_DELETE_USER,
         self::PERMISSION_VIEW_REPORTS,
         self::PERMISSION_MANAGE_ASSETS,
+        self::PERMISSION_SHOW_ASSETS,
     ];
 
     private const ROLE_PERMISSIONS = [
         self::ADMIN => self::ALL_PERMISSIONS,
         self::MANAGER => [
+            self::PERMISSION_CREATE_USER,
             self::PERMISSION_VIEW_REPORTS,
             self::PERMISSION_EDIT_USER,
             self::PERMISSION_MANAGE_ASSETS,
         ],
         self::EMPLOYEE => [
-            self::PERMISSION_VIEW_REPORTS,
+            self::PERMISSION_SHOW_ASSETS
         ],
     ];
 

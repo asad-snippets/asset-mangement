@@ -13,17 +13,28 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'company_name' => 'required|string|max:255',
+            'industry' => 'required|in:pharmacutical,technology,manufacturing,logistics,energy & utilities',
+            'company_size' => 'required|string|max:255',
+            'company_size_employees' => 'required|integer|min:1',
+            'location' => 'required|string|max:255',
+            'admin_full_name' => 'required|string|max:255',
+            'email_address' => 'required|email|unique:users,email',
+            'contact_number' => 'required|string|max:50',
             'password' => 'required|min:6',
-            'role' => 'in:admin,manager,employee'
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => $request->admin_full_name,
+            'email' => $request->email_address,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? Role::EMPLOYEE,
+            'company_name' => $request->company_name,
+            'industry' => $request->industry,
+            'company_size' => $request->company_size,
+            'company_size_employees' => $request->company_size_employees,
+            'location' => $request->location,
+            'contact_number' => $request->contact_number,
+            'role' => Role::ADMIN,
             'permissions' => [],
         ]);
 

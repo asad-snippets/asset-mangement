@@ -16,10 +16,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'company_name',
+        'industry',
+        'company_size',
+        'company_size_employees',
+        'location',
+        'contact_number',
+        'department',
         'role',
         'permissions'
     ];
-
     protected $hidden = [
         'password',
         'remember_token',
