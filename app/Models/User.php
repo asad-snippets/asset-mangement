@@ -24,7 +24,10 @@ class User extends Authenticatable
         'contact_number',
         'department',
         'role',
-        'permissions'
+        'permissions',
+        'otp_code',
+        'otp_expires_at',
+        'otp_verified_at'
     ];
     protected $hidden = [
         'password',
@@ -37,6 +40,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'permissions' => 'array',
+            'otp_expires_at' => 'datetime',
+            'otp_verified_at' => 'datetime',
         ];
     }
 

@@ -19,9 +19,9 @@ class Asset extends Model
 
     public const CONDITIONS = [
         'Good',
-        'fair',
-        'excellent',
-        'poor',
+        'Fair',
+        'Excellent',
+        'Poor',
         'at risk',
     ];
 
@@ -29,6 +29,7 @@ class Asset extends Model
         'asset_name',
         'category',
         'asset_code',
+        'description',
         'purchase_date',
         'purchase_cost',
         'condition',
