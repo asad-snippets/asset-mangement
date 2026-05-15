@@ -9,24 +9,17 @@ class Asset extends Model
 {
     use HasFactory;
 
-    public const CATEGORIES = [
-        'Harware',
-        'Software License',
-        'Furniture',
-        'Infrascture',
-        'Vehicle',
-    ];
-
     public const CONDITIONS = [
+        'Excellent',
         'Good',
         'Fair',
-        'Excellent',
         'Poor',
-        'at risk',
+        'At Risk',
     ];
 
     protected $fillable = [
         'asset_name',
+        'category_id',
         'category',
         'asset_code',
         'description',

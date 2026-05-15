@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AssetController extends Controller
 {
@@ -29,7 +31,7 @@ class AssetController extends Controller
     {
         $request->validate([
             'asset_name' => 'required|string|max:255',
-            'category' => 'required|in:' . implode(',', Asset::CATEGORIES),
+            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')],
             'asset_code' => 'required|string|max:100|unique:assets,asset_code',
             'description' => 'nullable|string|max:255',
             'purchase_date' => 'required|date',
@@ -38,9 +40,12 @@ class AssetController extends Controller
             'location' => 'required|string|max:255',
         ]);
 
+        $category = Category::select('id', 'name')->find($request->category_id);
+
         $asset = Asset::create([
             'asset_name' => $request->asset_name,
-            'category' => $request->category,
+            'category_id' => $category->id,
+            'category' => $category->name,
             'asset_code' => $request->asset_code,
             'description' => $request->description,
             'purchase_date' => $request->purchase_date,
@@ -62,7 +67,7 @@ class AssetController extends Controller
 
         $request->validate([
             'asset_name' => 'required|string|max:255',
-            'category' => 'required|in:' . implode(',', Asset::CATEGORIES),
+            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')],
             'asset_code' => 'required|string|max:100|unique:assets,asset_code,' . $asset->id,
             'description' => 'nullable|string|max:255',
             'purchase_date' => 'required|date',
@@ -71,9 +76,12 @@ class AssetController extends Controller
             'location' => 'required|string|max:255',
         ]);
 
+        $category = Category::select('id', 'name')->find($request->category_id);
+
         $asset->update([
             'asset_name' => $request->asset_name,
-            'category' => $request->category,
+            'category_id' => $category->id,
+            'category' => $category->name,
             'asset_code' => $request->asset_code,
             'description' => $request->description,
             'purchase_date' => $request->purchase_date,

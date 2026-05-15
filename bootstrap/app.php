@@ -24,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
             Route::middleware('api')
                 ->prefix('api')
+                ->group(base_path('routes/categories.php'));
+
+            Route::middleware('api')
+                ->prefix('api')
                 ->group(base_path('routes/assets.php'));
         },
     )
@@ -70,7 +74,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 405);
             }
 
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+            $status = method_exists($e, 'getStatusCode') ? (int) $e->getStatusCode() : 500;
+
+            if ($status < 100 || $status > 599) {
+                $status = 500;
+            }
 
             return response()->json([
                 'success' => false,
