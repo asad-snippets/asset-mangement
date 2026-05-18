@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -16,6 +17,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'company_id',
         'company_name',
         'industry',
         'company_size',
@@ -52,5 +54,20 @@ class User extends Authenticatable
         $allPermissions = array_merge($rolePermissions, $userPermissions);
 
         return in_array($permission, $allPermissions, true);
+    }
+
+    public function assets(): HasMany
+    {
+        return $this->hasMany(Asset::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function companyId(): int
+    {
+        return $this->company_id ?? $this->id;
     }
 }

@@ -12,6 +12,7 @@ class UserManagementController extends Controller
     public function createUser(Request $request)
     {
         $actor = $request->user();
+        $companyId = $actor->company_id ?? $actor->id;
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -50,6 +51,7 @@ class UserManagementController extends Controller
             'password' => Hash::make($request->password),
             'role' => $role,
             'permissions' => $permissionCheck['permissions'],
+            'company_id' => $companyId,
         ]);
 
         return response()->json([

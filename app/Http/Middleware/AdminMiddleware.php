@@ -15,6 +15,10 @@ class AdminMiddleware
             return response()->error('Unauthorized User. Please Login First', 401);
         }
 
+        if ($user->role === Role::SUPER_ADMIN) {
+            return $next($request);
+        }
+
         $allowedRoles = array_map('trim', explode('|', $role));
 
         if (!in_array($user->role, $allowedRoles, true)) {

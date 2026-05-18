@@ -2,6 +2,7 @@
 namespace App\Helpers;
 class Role
 {
+    public const SUPER_ADMIN = 'super admin';
     public const ADMIN = 'admin';
     public const MANAGER = 'manager';
     public const EMPLOYEE = 'employee';
@@ -13,6 +14,7 @@ class Role
     public const PERMISSION_SHOW_ASSETS='show-assets';
 
     public const ROLES = [
+        self::SUPER_ADMIN,
         self::ADMIN,
         self::MANAGER,
         self::EMPLOYEE,
@@ -28,6 +30,7 @@ class Role
     ];
 
     private const ROLE_PERMISSIONS = [
+        self::SUPER_ADMIN => self::ALL_PERMISSIONS,
         self::ADMIN => self::ALL_PERMISSIONS,
         self::MANAGER => [
             self::PERMISSION_CREATE_USER,

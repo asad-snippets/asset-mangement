@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -13,17 +14,28 @@ class AdminController extends Controller
             'message' => 'Welcome To Admin Dashboard'
         ]);
     }
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::all();
+        $companyId = $request->user()->companyId();
+
+        $users = User::where('company_id', $companyId)
+            ->orWhere('id', $companyId)
+            ->get();
 
         return response()->json([
             'users' => $users
         ]);
     }
-    public function singleUser($id)
+    public function singleUser(Request $request, $id)
     {
-        $user = User::find($id);
+        $companyId = $request->user()->companyId();
+
+        $user = User::where('id', $id)
+            ->where(function ($query) use ($companyId) {
+                $query->where('company_id', $companyId)
+                    ->orWhere('id', $companyId);
+            })
+            ->first();
 
         return response()->json([
             'user' => $user
@@ -31,9 +43,16 @@ class AdminController extends Controller
     }
 
     // Delete User
-    public function deleteUser($id)
+    public function deleteUser(Request $request, $id)
     {
-        $user = User::find($id);
+        $companyId = $request->user()->companyId();
+
+        $user = User::where('id', $id)
+            ->where(function ($query) use ($companyId) {
+                $query->where('company_id', $companyId)
+                    ->orWhere('id', $companyId);
+            })
+            ->first();
 
         if (!$user) {
 

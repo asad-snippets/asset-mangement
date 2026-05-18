@@ -37,7 +37,7 @@ class AuthController extends Controller
             'company_size' => $request->company_size,
             'location' => $request->location,
             'contact_number' => $request->contact_number,
-            'role' => Role::ADMIN,
+            'role' => Role::SUPER_ADMIN,
             'permissions' => [],
         ];
 
@@ -109,6 +109,11 @@ class AuthController extends Controller
         $payload['otp_verified_at'] = now();
 
         $user = User::create($payload);
+
+        if ($user->company_id === null) {
+            $user->company_id = $user->id;
+            $user->save();
+        }
 
         DB::table('pending_registrations')
             ->where('email', $request->email_address)
