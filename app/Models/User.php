@@ -7,11 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected $appends = [
+        'user_photo_url',
+    ];
 
     protected $fillable = [
         'name',
@@ -26,6 +31,8 @@ class User extends Authenticatable
         'contact_number',
         'department',
         'role',
+        'status',
+        'user_photo',
         'permissions',
         'otp_code',
         'otp_expires_at',
@@ -69,5 +76,27 @@ class User extends Authenticatable
     public function companyId(): int
     {
         return $this->company_id ?? $this->id;
+    }
+
+    public function getUserPhotoUrlAttribute(): ?string
+    {
+        $path = $this->user_photo;
+        if (!$path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, '/storage/')) {
+            return url($path);
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return url('/' . $path);
+        }
+
+        return Storage::url($path);
     }
 }
